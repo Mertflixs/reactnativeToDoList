@@ -1,13 +1,26 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, SafeAreaView, Dimensions, FlatList } from "react-native";
 import AddComp from "./components/addComp/index";
+import ToDoCard from "./components/toDoList/toDoList";
 
 export default function App() {
 	const [counter, setCounter] = useState(0);
 	const [doList, setDoList] = useState("");
+	const [list, setObj] = useState([]);
+
+	const renderToDo= ({item}) => (<ToDoCard item={item} counter={counter} />);
+
+	
 
 	const setList = () => {
-		console.log(doList);
+		const obj = {
+			id: counter,
+			title: doList,
+			status: true,
+		}
+		setObj([...list, obj]);
+		setCounter(counter + 1);
+		setDoList("");
 	}
 
 	return (
@@ -22,11 +35,13 @@ export default function App() {
 			</View>
 			<View style={styles.listContainer}>
 				<FlatList
-				
+					keyExtractor={item => item.id}
+					data={list}
+					renderItem={renderToDo}
 				/>
 			</View>
 			<View style={styles.addListContainer}>
-				<AddComp setText={setDoList} setList={setList} />
+				<AddComp text={doList} setText={setDoList} setList={setList} />
 			</View>
 		</SafeAreaView>
 	);
@@ -59,10 +74,8 @@ const styles = StyleSheet.create({
 	},
 	listContainer: {
 		flex: 1,
-		backgroundColor: "white",
 	},
 	addListContainer: {
 		height: 100,
-		backgroundColor: "hotpink",
 	}
 })
